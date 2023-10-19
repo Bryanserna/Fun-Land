@@ -10,9 +10,17 @@ namespace FunLandAPI.Controllers
     {
         [HttpPost(Name = "Add")]
 
-        public async Task<IActionResult> Add(string escripcion)
+        public async Task<IActionResult> Get(int usuario, int producto) Add(int precio, string cantidad)
         {
-            var carritoToAdd = await new FunLandContext().Carritos.Where(x => x.IdUsuario == id).SingleOrDefaultAsync();
+            var carritoToAdd = await new FunLandContext().Carritos.Where(x => x.IdUsuario).SingleOrDefaultAsync();
+
+            if(carritoToAdd is null)
+            {
+                carritoToAdd = new Carrito();
+               
+            }
+            
+                    
         }
 
     }
