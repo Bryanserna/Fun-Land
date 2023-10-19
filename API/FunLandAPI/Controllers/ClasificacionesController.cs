@@ -30,7 +30,11 @@ namespace FunLandAPI.Controllers
         [HttpGet(Name = "Get")]
         public async Task<IActionResult> Get(int id)
         {
-            var clasificacion = await new FunLandContext().Clasificacions.Where(x=> x.IdClasificacion == id).SingleOrDefaultAsync();
+            var clasificacion = await new FunLandContext().Clasificacions.Where(x => x.IdClasificacion == id).SingleOrDefaultAsync();
+
+            if (clasificacion is null)
+                return BadRequest("El id indicado no existe");
+
             return Ok(clasificacion);
         }
 
@@ -49,7 +53,7 @@ namespace FunLandAPI.Controllers
                 var clasificacionToUpdate = await ctx.Clasificacions.Where(x => x.IdClasificacion == id).SingleOrDefaultAsync();
 
                 if (clasificacionToUpdate is null)
-                    return BadRequest("El registro no existe indicado no existe");
+                    return BadRequest("El id indicado no existe");
 
                 clasificacionToUpdate.Descripcion = descripcion;
                 ctx.SaveChanges();
