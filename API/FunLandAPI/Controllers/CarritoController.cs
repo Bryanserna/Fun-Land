@@ -5,21 +5,24 @@ using Microsoft.EntityFrameworkCore;
 namespace FunLandAPI.Controllers
 {
     [ApiController]
-    [Route("[Controller]/[Action]")]
+    [Route("[controller]/[action]")]
     public class CarritoController : ControllerBase
     {
         [HttpPost(Name = "Add")]
 
-        public async Task<IActionResult> Get(int usuario, int producto) Add(int precio, string cantidad)
+        public async Task<IActionResult> Add(int usuario, int producto, int precio, int cantidad)
         {
-            var carritoToAdd = await new FunLandContext().Carritos.Where(x => x.IdUsuario).SingleOrDefaultAsync();
+            var carritoToAdd = await new FunLandContext().Carritos.Where(x => x.IdUsuario==usuario).SingleOrDefaultAsync();
 
             if(carritoToAdd is null)
             {
                 carritoToAdd = new Carrito();
-               
+                carritoToAdd.Precio = precio;
+                carritoToAdd.Cantidad = cantidad;               
             }
-            
+            var newCarrito = await new FunLandContext().Carritos.AddAsync(carritoToAdd);
+
+            return Ok(newCarrito);
                     
         }
 
