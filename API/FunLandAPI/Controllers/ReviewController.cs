@@ -8,36 +8,46 @@ namespace FunLandAPI.Controllers
     [Route("[controller]/[action]")]
     public class ReviewController : ControllerBase
     {
+        private FunLandContext context;
+
+        public ReviewController()
+        {
+            context = new FunLandContext();
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddReview(int idProducto, int idUsuario, string review)
         {
-            var reviewToAdd = await new FunLandContext().Reviews.FirstOrDefaultAsync(x => x.IdProducto == idProducto && x.IdUsuario == idUsuario);
+            var reviewToAdd = await context.Reviews.FirstOrDefaultAsync(x => x.IdProducto == idProducto && x.IdUsuario == idUsuario);
 
             if (reviewToAdd is not null)
                 return Ok(reviewToAdd);
-            bool existProduct = await new FunLandContext().Productos.AnyAsync(r => r.IdProducto == idProducto);
+            bool existProduct = await context.Productos.AnyAsync(r => r.IdProducto == idProducto);
             if (!existProduct)
             { return NotFound($"No existe el producto {idProducto}"); }
 
-            bool existUsuario = await new FunLandContext().Usuarios.AnyAsync(r => r.IdUsuario == idUsuario);
+            bool existUsuario = await context.Usuarios.AnyAsync(r => r.IdUsuario == idUsuario);
             if (!existUsuario)
             { return NotFound($"No existe el usuario {idUsuario}"); }
 
-            var reviewAdded = await new FunLandContext().Reviews.AddAsync(new Review
+            var reviewEntity = new Review
             {
                 IdProducto = idProducto,
                 IdUsuario = idUsuario,
                 Review1 = review,
                 Fecha = DateTime.Now,
-            });
+            };
 
-            return Ok(reviewAdded);
+            await context.Reviews.AddAsync(reviewEntity);
+            await context.SaveChangesAsync();
+
+            return Ok(reviewEntity);
         }
 
         [HttpGet]
         public async Task<IActionResult> Get(int id)
         {
-            var review = await new FunLandContext().Reviews.FirstOrDefaultAsync(d => d.IdReview == id);
+            var review = await new FunLandContext().Reviews.IgnoreAutoIncludes().AsNoTracking().FirstOrDefaultAsync(d => d.IdReview == id);
 
             if (review is null)
                 return BadRequest("El id indicado no existe");
@@ -46,7 +56,7 @@ namespace FunLandAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll() => Ok(await new FunLandContext().Reviews.ToListAsync());
+        public async Task<IActionResult> GetAll() => Ok(await new FunLandContext().Reviews.AsNoTracking().ToListAsync());
 
         [HttpPut]
         public async Task<IActionResult> Update(int id, string review)
