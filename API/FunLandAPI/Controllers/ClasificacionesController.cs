@@ -9,7 +9,7 @@ namespace FunLandAPI.Controllers
     [Route("[controller]/[action]")]
     public class ClasificacionesController : ControllerBase
     {
-        [HttpPost(Name ="Add")]
+        [HttpPost]
         public async Task<IActionResult> Add(string descripcion)
         {
             using (var ctx = new FunLandContext())
@@ -33,13 +33,13 @@ namespace FunLandAPI.Controllers
             }
         }
 
-        [HttpGet(Name = "Get")]
+        [HttpGet]
         public async Task<IActionResult> Get(int id)
         {
             var entity = await new FunLandContext().Clasificacions.Where(x => x.IdClasificacion == id).SingleOrDefaultAsync();
 
             if (entity is null)
-                return BadRequest("El id indicado no existe");
+                return NotFound($"El id {id} no existe");
 
             var clasificacion = new ClasificacionDTO
             {
@@ -51,10 +51,11 @@ namespace FunLandAPI.Controllers
             return Ok(clasificacion);
         }
 
-        [HttpGet(Name = "GetAll")]
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var entities = await new FunLandContext().Clasificacions.ToListAsync();
+
 
             List<ClasificacionDTO> clasificaciones = entities.Select(x => new ClasificacionDTO
             {
@@ -66,7 +67,7 @@ namespace FunLandAPI.Controllers
             return Ok(clasificaciones);
         }
 
-        [HttpPut(Name = "Update")]
+        [HttpPut]
         public async Task<IActionResult> Update(int id,string descripcion)
         {
             using (var ctx = new FunLandContext())
@@ -74,7 +75,7 @@ namespace FunLandAPI.Controllers
                 var entityToUpdate = await ctx.Clasificacions.Where(x => x.IdClasificacion == id).SingleOrDefaultAsync();
 
                 if (entityToUpdate is null)
-                    return BadRequest("El id indicado no existe");
+                    return BadRequest($"El id {id} no existe");
 
                 entityToUpdate.Descripcion = descripcion;
                 ctx.SaveChanges();
@@ -90,7 +91,7 @@ namespace FunLandAPI.Controllers
             }
         }
 
-        [HttpDelete(Name = "Delete")]
+        [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
             using (var ctx = new FunLandContext())
@@ -98,7 +99,7 @@ namespace FunLandAPI.Controllers
                 var entityToDelete = await ctx.Clasificacions.Where(x => x.IdClasificacion == id).SingleOrDefaultAsync();
 
                 if (entityToDelete is null)
-                    return BadRequest("El id indicado no existe");
+                    return BadRequest($"El id {id} no existe");
 
                 entityToDelete.Activo = false;
                 ctx.SaveChanges();
