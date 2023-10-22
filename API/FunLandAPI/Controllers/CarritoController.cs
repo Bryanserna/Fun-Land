@@ -8,25 +8,25 @@ namespace FunLandAPI.Controllers
     [Route("[controller]/[action]")]
     public class CarritoController : ControllerBase
     {
-        [HttpPost]
-        public async Task<IActionResult> AddCarrito(int usuario, int producto, int precio, int cantidad)
-        {
-            var carritoToAdd = await new FunLandContext().Carritos.Where(x => x.IdUsuario==usuario && x.IdProducto==producto).SingleOrDefaultAsync();
+        //[HttpPost]
+        //public async Task<IActionResult> AddCarrito(int usuario, int producto, int precio, int cantidad)
+        //{
+        //    var carritoToAdd = await new funlandcontext().carritos.where(x => x.idusuario == usuario && x.idproducto == producto).singleordefaultasync();
 
-            if(carritoToAdd is not null)
-            
-                return Ok(carritoToAdd);
-                bool existProduct = await new FunLandContext().Productos.AnyAsync(r => r.IdProducto == idProducto);
+        //    if (carritotoadd is not null)
 
-                carritoToAdd = new Carrito();
-                carritoToAdd.Precio = precio;
-                carritoToAdd.Cantidad = cantidad;               
-            
-            var newCarrito = await new FunLandContext().Carritos.AddAsync(carritoToAdd);
+        //        return ok(carritotoadd);
+        //    bool existproduct = await new funlandcontext().productos.anyasync(r => r.idproducto == idproducto);
 
-            return Ok(newCarrito);
-                    
-        }
+        //    carritotoadd = new carrito();
+        //    carritotoadd.precio = precio;
+        //    carritotoadd.cantidad = cantidad;
+
+        //    var newcarrito = await new funlandcontext().carritos.addasync(carritotoadd);
+
+        //    return ok(newcarrito);
+
+        //}
 
     }
 }
