@@ -11,6 +11,7 @@ namespace FunLandAPI.Controllers
         [HttpPost(Name ="Add")]
         public async Task<IActionResult> Add(string descripcion)
         {
+            //TODO: No se si ya jala / Corregir DB y revisar
             var clasificacionToAdd = await new FunLandContext().Clasificacions.Where(x=> x.Descripcion == descripcion).SingleOrDefaultAsync();
 
             if(clasificacionToAdd is null)
@@ -23,7 +24,7 @@ namespace FunLandAPI.Controllers
 
             var newClasificacion = await new FunLandContext().Clasificacions.AddAsync(clasificacionToAdd);
 
-            return Ok(newClasificacion.Entity);
+            return Ok(newClasificacion);
         }
 
         [HttpGet(Name = "Get")]
