@@ -19,13 +19,13 @@ namespace FunLandAPI.Controllers
 
                 if (usuario is null)
                     return NotFound("El usuario no existe");
-                
+
                 var carrito = await ctx.Carritos.Where(x => x.IdUsuario == usuario.IdUsuario).ToListAsync();
 
                 if (carrito.Count() <= 0)
                     return BadRequest("El carrito no contiene registros");
 
-                var productosCarrito  = carrito.Select(x => new Ventum
+                var productosCarrito = carrito.Select(x => new Ventum
                 {
                     IdUsuario = x.IdUsuario,
                     IdProducto = x.IdProducto,
