@@ -60,9 +60,7 @@ public partial class FunLandContext : DbContext
 
             entity.ToTable("Clasificacion");
 
-            entity.Property(e => e.IdClasificacion)
-                .ValueGeneratedNever()
-                .HasColumnName("Id_Clasificacion");
+            entity.Property(e => e.IdClasificacion).HasColumnName("Id_Clasificacion");
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -74,9 +72,7 @@ public partial class FunLandContext : DbContext
 
             entity.ToTable("Genero");
 
-            entity.Property(e => e.IdGenero)
-                .ValueGeneratedNever()
-                .HasColumnName("Id_Genero");
+            entity.Property(e => e.IdGenero).HasColumnName("Id_Genero");
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -88,9 +84,7 @@ public partial class FunLandContext : DbContext
 
             entity.ToTable("Producto");
 
-            entity.Property(e => e.IdProducto)
-                .ValueGeneratedNever()
-                .HasColumnName("Id_Producto");
+            entity.Property(e => e.IdProducto).HasColumnName("Id_Producto");
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -120,9 +114,7 @@ public partial class FunLandContext : DbContext
 
             entity.ToTable("Review");
 
-            entity.Property(e => e.IdReview)
-                .ValueGeneratedNever()
-                .HasColumnName("Id_review");
+            entity.Property(e => e.IdReview).HasColumnName("Id_review");
             entity.Property(e => e.Fecha).HasColumnType("datetime");
             entity.Property(e => e.IdProducto).HasColumnName("Id_Producto");
             entity.Property(e => e.IdUsuario).HasColumnName("Id_Usuario");
@@ -146,9 +138,7 @@ public partial class FunLandContext : DbContext
 
             entity.ToTable("Usuario");
 
-            entity.Property(e => e.IdUsuario)
-                .ValueGeneratedNever()
-                .HasColumnName("Id_Usuario");
+            entity.Property(e => e.IdUsuario).HasColumnName("Id_Usuario");
             entity.Property(e => e.Correo)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -165,9 +155,7 @@ public partial class FunLandContext : DbContext
         {
             entity.HasKey(e => e.IdVenta);
 
-            entity.Property(e => e.IdVenta)
-                .ValueGeneratedNever()
-                .HasColumnName("Id_Venta");
+            entity.Property(e => e.IdVenta).HasColumnName("Id_Venta");
             entity.Property(e => e.Fecha).HasColumnType("datetime");
             entity.Property(e => e.IdProducto).HasColumnName("Id_Producto");
             entity.Property(e => e.IdUsuario).HasColumnName("Id_Usuario");

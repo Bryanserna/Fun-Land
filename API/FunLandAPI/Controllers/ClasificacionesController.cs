@@ -1,4 +1,5 @@
 using FunLandAPI.Database;
+using FunLandAPI.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,28 +12,41 @@ namespace FunLandAPI.Controllers
         [HttpPost(Name ="Add")]
         public async Task<IActionResult> Add(string descripcion)
         {
-            var clasificacionToAdd = await new FunLandContext().Clasificacions.Where(x=> x.Descripcion == descripcion).SingleOrDefaultAsync();
-
-            if(clasificacionToAdd is null)
+            using (var ctx = new FunLandContext())
             {
-                clasificacionToAdd = new Clasificacion();
-                clasificacionToAdd.Descripcion = descripcion;
+                var clasificacionToAdd = await ctx.Clasificacions.Where(x => x.Descripcion == descripcion).SingleOrDefaultAsync();
+
+                if (clasificacionToAdd is not null)
+                    return BadRequest("El registro ya existe en la base de datos");
+
+                var entityEntry = await ctx.Clasificacions.AddAsync(new Clasificacion { Descripcion = descripcion, Activo=true });
+                ctx.SaveChanges();
+
+                var newClasificacion = new ClasificacionDTO
+                {
+                    Id = entityEntry.Entity.IdClasificacion,
+                    Descripcion = entityEntry.Entity.Descripcion ?? "",
+                    Activo = entityEntry.Entity.Activo ?? false
+                };
+
+                return Ok(newClasificacion);
             }
-
-            clasificacionToAdd.Activo = true;
-
-            var newClasificacion = await new FunLandContext().Clasificacions.AddAsync(clasificacionToAdd);
-
-            return Ok(newClasificacion.Entity);
         }
 
         [HttpGet(Name = "Get")]
         public async Task<IActionResult> Get(int id)
         {
-            var clasificacion = await new FunLandContext().Clasificacions.Where(x => x.IdClasificacion == id).SingleOrDefaultAsync();
+            var entity = await new FunLandContext().Clasificacions.Where(x => x.IdClasificacion == id).SingleOrDefaultAsync();
 
-            if (clasificacion is null)
+            if (entity is null)
                 return BadRequest("El id indicado no existe");
+
+            var clasificacion = new ClasificacionDTO
+            {
+                Id = entity.IdClasificacion,
+                Descripcion = entity.Descripcion ?? "",
+                Activo = entity.Activo ?? false
+            };
 
             return Ok(clasificacion);
         }
@@ -40,7 +54,15 @@ namespace FunLandAPI.Controllers
         [HttpGet(Name = "GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var clasificaciones = await new FunLandContext().Clasificacions.ToListAsync();
+            var entities = await new FunLandContext().Clasificacions.ToListAsync();
+
+            List<ClasificacionDTO> clasificaciones = entities.Select(x => new ClasificacionDTO
+            {
+                Id = x.IdClasificacion,
+                Descripcion = x.Descripcion ?? "",
+                Activo = x.Activo ?? false
+            }).ToList();
+
             return Ok(clasificaciones);
         }
 
@@ -49,15 +71,22 @@ namespace FunLandAPI.Controllers
         {
             using (var ctx = new FunLandContext())
             {
-                var clasificacionToUpdate = await ctx.Clasificacions.Where(x => x.IdClasificacion == id).SingleOrDefaultAsync();
+                var entityToUpdate = await ctx.Clasificacions.Where(x => x.IdClasificacion == id).SingleOrDefaultAsync();
 
-                if (clasificacionToUpdate is null)
+                if (entityToUpdate is null)
                     return BadRequest("El id indicado no existe");
 
-                clasificacionToUpdate.Descripcion = descripcion;
+                entityToUpdate.Descripcion = descripcion;
                 ctx.SaveChanges();
 
-                return Ok(clasificacionToUpdate);
+                var clasificacionUpdated = new ClasificacionDTO
+                {
+                    Id = entityToUpdate.IdClasificacion,
+                    Descripcion = entityToUpdate.Descripcion ?? "",
+                    Activo = entityToUpdate.Activo ?? false
+                };
+
+                return Ok(clasificacionUpdated);
             }
         }
 
@@ -66,14 +95,22 @@ namespace FunLandAPI.Controllers
         {
             using (var ctx = new FunLandContext())
             {
-                var clasificacionToDelete = await ctx.Clasificacions.Where(x => x.IdClasificacion == id).SingleOrDefaultAsync();
+                var entityToDelete = await ctx.Clasificacions.Where(x => x.IdClasificacion == id).SingleOrDefaultAsync();
 
-                if (clasificacionToDelete is null)
+                if (entityToDelete is null)
                     return BadRequest("El id indicado no existe");
 
-                clasificacionToDelete.Activo = false;
+                entityToDelete.Activo = false;
                 ctx.SaveChanges();
-                return Ok();
+
+                var clasificacionDeleted = new ClasificacionDTO
+                {
+                    Id = entityToDelete.IdClasificacion,
+                    Descripcion = entityToDelete.Descripcion ?? "",
+                    Activo = entityToDelete.Activo ?? false
+                };
+
+                return Ok(clasificacionDeleted);
             }
         }
     }
