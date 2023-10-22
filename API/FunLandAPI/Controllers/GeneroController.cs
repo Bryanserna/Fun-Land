@@ -15,7 +15,7 @@ namespace FunLandAPI.Controllers
         {
             using (var ctx = new FunLandContext())
             {
-                var entity = await ctx.Generos.Where(x => x.Descripcion == descripcion).SingleOrDefaultAsync();
+                var entity = await ctx.Generos.FirstOrDefaultAsync(x => x.Descripcion == descripcion);
 
                 if (entity is not null)
                     return BadRequest("El registro ya existe en la base de datos");
@@ -37,7 +37,7 @@ namespace FunLandAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> Get(int id)
         {
-            var entity = await new FunLandContext().Generos.Where(x => x.IdGenero == id).SingleOrDefaultAsync();
+            var entity = await new FunLandContext().Generos.FirstOrDefaultAsync(x => x.IdGenero == id);
 
             if (entity is null)
                 return NotFound($"El id {id} no existe");
@@ -73,7 +73,7 @@ namespace FunLandAPI.Controllers
         {
             using (var ctx = new FunLandContext())
             {
-                var entityToUpdate = await ctx.Generos.Where(x => x.IdGenero == id).SingleOrDefaultAsync();
+                var entityToUpdate = await ctx.Generos.FirstOrDefaultAsync(x => x.IdGenero == id);
 
                 if (entityToUpdate is null)
                     return BadRequest($"El id {id} no existe");
@@ -97,7 +97,7 @@ namespace FunLandAPI.Controllers
         {
             using (var ctx = new FunLandContext())
             {
-                var entityToDelete = await ctx.Generos.Where(x => x.IdGenero == id).SingleOrDefaultAsync();
+                var entityToDelete = await ctx.Generos.FirstOrDefaultAsync(x => x.IdGenero == id);
 
                 if (entityToDelete is null)
                     return BadRequest($"El id {id} no existe");

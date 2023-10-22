@@ -14,7 +14,7 @@ namespace FunLandAPI.Controllers
         {
             using (var ctx = new FunLandContext())
             {
-                var clasificacionToAdd = await ctx.Clasificacions.Where(x => x.Descripcion == descripcion).SingleOrDefaultAsync();
+                var clasificacionToAdd = await ctx.Clasificacions.FirstOrDefaultAsync(x => x.Descripcion == descripcion);
 
                 if (clasificacionToAdd is not null)
                     return BadRequest("El registro ya existe en la base de datos");
@@ -36,7 +36,7 @@ namespace FunLandAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> Get(int id)
         {
-            var entity = await new FunLandContext().Clasificacions.Where(x => x.IdClasificacion == id).SingleOrDefaultAsync();
+            var entity = await new FunLandContext().Clasificacions.FirstOrDefaultAsync(x => x.IdClasificacion == id);
 
             if (entity is null)
                 return NotFound($"El id {id} no existe");
@@ -72,7 +72,7 @@ namespace FunLandAPI.Controllers
         {
             using (var ctx = new FunLandContext())
             {
-                var entityToUpdate = await ctx.Clasificacions.Where(x => x.IdClasificacion == id).SingleOrDefaultAsync();
+                var entityToUpdate = await ctx.Clasificacions.FirstOrDefaultAsync(x => x.IdClasificacion == id);
 
                 if (entityToUpdate is null)
                     return BadRequest($"El id {id} no existe");
@@ -96,7 +96,7 @@ namespace FunLandAPI.Controllers
         {
             using (var ctx = new FunLandContext())
             {
-                var entityToDelete = await ctx.Clasificacions.Where(x => x.IdClasificacion == id).SingleOrDefaultAsync();
+                var entityToDelete = await ctx.Clasificacions.FirstOrDefaultAsync(x => x.IdClasificacion == id);
 
                 if (entityToDelete is null)
                     return BadRequest($"El id {id} no existe");
